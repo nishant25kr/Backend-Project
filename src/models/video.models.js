@@ -43,15 +43,6 @@ const videoSchema = new mongoose.Schema({
 
 },{timestamps:true})
 
-userSchema.pre("save", async function(next){
-    if(!this.modified("password")) return next();
 
-    this.password = bcrypt.hash(this.password,5);
-    next();
-})
-
-userSchema.methods.isPasswordCorrect = async function(password) {
-    return await bcrypt.compare(password,this.password)
-}
 
 export const Video = mongoose.model("Video",videoSchema)
