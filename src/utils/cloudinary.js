@@ -28,4 +28,4 @@ import fs from "fs"
     
     console.log(uploadOnCloudinary);
     
-    
+export {uploadOnCloudinary}

@@ -20,6 +20,12 @@ connectDB()
 
 
 
+
+
+
+
+
+
 //another way of connection
 
 // (()=>{
