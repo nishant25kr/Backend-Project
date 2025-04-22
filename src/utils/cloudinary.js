@@ -3,13 +3,18 @@ import fs from "fs"
 
 
 
+    // cloudinary.config({ 
+    //     cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    //     api_key: process.env.CLOUDINARY_API_KEY, 
+    //     api_secret: process.env.CLOUDINARY_API_SECRET 
+    // });
+
+
     cloudinary.config({ 
-        cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-        api_key: process.env.CLOUDINARY_API_KEY, 
-        api_secret: process.env.CLOUDINARY_API_SECRET 
+        cloud_name: 'dfqeev36z', 
+        api_key: 648597441622775, 
+        api_secret: 'HgQ_bP1iFDyRwb0S7irVvE80epE'
     });
-
-
 
     
 
