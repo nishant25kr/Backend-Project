@@ -10,11 +10,6 @@ import fs from "fs"
     // });
 
 
-    cloudinary.config({ 
-        cloud_name: 'dfqeev36z', 
-        api_key: 648597441622775, 
-        api_secret: 'HgQ_bP1iFDyRwb0S7irVvE80epE'
-    });
 
     
 
