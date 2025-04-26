@@ -4,6 +4,7 @@ import { User } from "../models/user.models.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
+import mongoose from "mongoose";
 
 
 const generateAccessandRefreshToken = async (userId) => {
@@ -410,6 +411,61 @@ const getUserChannerProfile = asyncHandler( async (req,res) => {
     );
 })
 
+const getUserWatchHistory = asyncHandler(async(req,res) => {
+    const user = await User.aggregate([
+        {
+            $match:{
+                _id: new mongoose.Types.ObjectId(req.user._id)
+            }
+        },
+        {
+            $lookup:{
+                from:"videos",
+                localField:"watchHistory",
+                foreignField:"_id",
+                as:"watchHistory",
+                pipeline:[
+                    {
+                        $lookup: "users",
+                        localField: "owner",
+                        foreignField:"_id",
+                        as:"owner",
+                        pipeline:[
+                            {
+                                $project:{
+                                    fullname:1,
+                                    usernaem:1,
+                                    avatar:1
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            pipeline:[
+                {
+                    $addFields:{
+                        owner:{
+                            $first:"owner"
+                        }
+                    }
+                }
+            ]
+        }
+    ])
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            user[o].watchHistory,
+            "Watch history fetch successfully"
+        )
+    )
+})
+
+
 export { 
     registerUser,
     loginUser,
@@ -420,7 +476,8 @@ export {
     updateUserDetail,
     updateAvatar,
     updateCoverImage,
-    getUserChannerProfile
+    getUserChannerProfile,
+    getUserWatchHistory
 }
 
 
