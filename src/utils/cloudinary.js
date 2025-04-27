@@ -9,12 +9,13 @@ import fs from "fs"
     //     api_secret: process.env.CLOUDINARY_API_SECRET 
     // });
 
+    cloudinary.config({ 
+        cloud_name: 'dfqeev36z', 
+        api_key: 648597441622775, 
+        api_secret: 'HgQ_bP1iFDyRwb0S7irVvE80epE'
+    });
 
 
-    
-
-   
-    
     // Upload an image
      const uploadOnCloudinary = async (localfilepath)=>{
          try {

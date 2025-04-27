@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js"
 import { User } from "../models/user.models.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
+import cookie from 'cookie';
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
@@ -11,14 +12,16 @@ const generateAccessandRefreshToken = async (userId) => {
     try {
         const user = await User.findById(userId)
         
-        const accesstoken = user.generateAccessToken();
+        const accessToken = user.generateAccessToken();
 
-        const refreshtoken = user.generateRefreshToken();
+        const refreshToken = user.generateRefreshToken();
 
-        user.refreshtoken = refreshtoken;
+        //typo user.refreshtoken->user.refreshToken
+        //it was not saving the refreshToken of user
+        user.refreshToken = refreshToken;
         await user.save({ validateBeforeSave: false });
 
-        return { accesstoken, refreshtoken }
+        return { accessToken, refreshToken }
 
     } catch (err) {
         throw new ApiError(500, "Something went wrong while generating refresh and access token")
@@ -122,7 +125,11 @@ const loginUser = asyncHandler(async (req, res) => {
     //access and refresh token
     //send cookies
 
+    //console.log("in login")
     const { email, username, password } = req.body
+
+    //console.log(email)
+
     if (!username && !email) {
         throw new ApiError(400, "Username or email is required");
     }
@@ -140,7 +147,10 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Password is incorrect");
     }
 
-    const { accesstoken, refreshtoken } = await generateAccessandRefreshToken(user._id);
+    const { accessToken, refreshToken } = await generateAccessandRefreshToken(user._id);
+
+    // console.log(accesstoken)
+    // console.log(refreshtoken)
 
     const LoggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
@@ -150,10 +160,10 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     return res.status(200)
-        .cookie("accessToken", accesstoken, option)
-        .cookie("refreshtoken", refreshtoken, option)
+        .cookie("accessToken", accessToken, option)
+        .cookie("refreshtoken", refreshToken, option)
         .json(
-            new ApiResponse(200, { user, loginUser, refreshtoken, accesstoken }, "User logged in successfully")
+            new ApiResponse(200, { user, LoggedInUser, refreshToken, accessToken }, "User logged in successfully")
         );
 
 })
@@ -184,20 +194,32 @@ const logoutUser = asyncHandler(async(req, res) => {
 })
 
 const refreshAccessToken = asyncHandler(async(req,res) =>{
-    const incomingAccessToken = cookie.refreshToken || req.body.refreshToken
+    //console.log("in refreshaccesstoken");
+    //replace refreshToken -> refreshToken
+    const incomingAccessToken = req.cookies.refreshtoken || req.body.refreshtoken
+    //console.log("after incoming");
+    //console.log("Cookies:", req.cookies.refreshtoken);
+    //console.log("Body:", req.body);
+
+    
     if(!incomingAccessToken){
         throw new ApiError(400,"incomingAccessToken is not there");
     }
 
     try {
         const decodedToken = jwt.verify(incomingAccessToken,process.env.REFRESH_TOKEN_SECRET);
+        console.log(decodedToken)
     
         const user = await User.findById(decodedToken?._id)
+
+        //console.log(user)
     
         if(!user){
-            throw new ApiError(400,"Invalid refresh token")
+            throw new ApiError(400,"Invalid refresh token, user not available")
         }
-    
+
+        //console.log( user.refreshToken )
+        
         if(incomingAccessToken !== user.refreshToken){
             throw new ApiError(401,"Refresh token is expired or user");
         }
@@ -209,7 +231,7 @@ const refreshAccessToken = asyncHandler(async(req,res) =>{
     
         const {accesstoken,newrefreshtoken} = await generateAccessandRefreshToken(user._id);
     
-        reture.res
+        return res
         .status(200)
         .cookie("accessToken",accesstoken)
         .cookie("refreshToken",newrefreshtoken)
@@ -223,7 +245,12 @@ const refreshAccessToken = asyncHandler(async(req,res) =>{
 })
 
 const changeCurrentPassword = asyncHandler(async(req,res) => {
+    console.log("inside pc")
     const {oldPassword,newPassword,confPassword} = req.body
+
+    console.log(oldPassword)
+    console.log(newPassword)
+    console.log(confPassword)
 
     if(!(newPassword === confPassword)){
         throw new ApiError(400,"new password and confirm password not matching");
