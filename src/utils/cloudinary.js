@@ -29,14 +29,16 @@ import fs from "fs"
                 resource_type: "auto"
             });
 
+            //console.log(response)
+
 
             //console.log("Upladed successfully",response);
-            fs.unlinkSync(localfilepath)
+            //fs.unlinkSync(localfilepath)
             return response;
             
         } catch (err) {
 
-            fs.unlinkSync(localfilepath)  //this will remore locally saved temporary file because of filure
+            //fs.unlinkSync(localfilepath)  //this will remore locally saved temporary file because of filure
             return null;
         }
      }
