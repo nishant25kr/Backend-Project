@@ -24,7 +24,7 @@ import fs from "fs"
                  return null;
             } 
             
-            //console.log("above response section")
+            console.log("above response section")
             const response = await cloudinary.uploader.upload(localfilepath ,{
                 resource_type: "auto"
             });
