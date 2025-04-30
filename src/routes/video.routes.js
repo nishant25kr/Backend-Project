@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import {
-    
+    getVideoById,
     publishAVideo,
+    getAllVideos
     
 } from "../controllers/video.controller.js"
 import {verifyJWT} from "../middlewares/auth.middleware.js"
@@ -12,7 +13,7 @@ router.use(verifyJWT); // Apply verifyJWT middleware to all routes in this file
 
 router
     .route("/publishAVideo")
-    //.get(getAllVideos)
+    .get(getAllVideos)
     .post(
         upload.fields([
             {
@@ -28,9 +29,9 @@ router
         publishAVideo
     );
 
-// router
-//     .route("/:videoId")
-//     .get(getVideoById)
+router
+    .route("/:videoId")
+//    .get(getVideoById)
 //     .delete(deleteVideo)
 //     .patch(upload.single("thumbnail"), updateVideo);
 
