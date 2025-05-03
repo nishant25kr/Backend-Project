@@ -20,6 +20,8 @@ import videoRouter from './routes/video.routes.js';
 import tweetRoutes from './routes/tweet.routes.js'
 import playlistRouter from "./routes/playlist.routes.js"
 import subscriptionRouter from "./routes/subscription.routes.js"
+import commentRouter from "./routes/comment.routes.js"
+
 
 
 
@@ -29,5 +31,7 @@ app.use("/api/v1/videos", videoRouter);
 app.use("/api/v1/tweet", tweetRoutes);
 app.use("/api/v1/playlist", playlistRouter);
 app.use("/api/v1/subscriptions", subscriptionRouter);
+app.use("/api/v1/comments", commentRouter)
+
 
 export { app }
