@@ -4,6 +4,11 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 
+app.get('/',(req,res)=>{
+    // res.send("hello")
+    res.send(`${process.env.CLOUDINARY_CLOUD_NAME}`)
+})
+
 app.use(cors({
     origin:process.env.CORS_ORIGIN,
     credentials:true
@@ -22,9 +27,6 @@ import playlistRouter from "./routes/playlist.routes.js"
 import subscriptionRouter from "./routes/subscription.routes.js"
 import commentRouter from "./routes/comment.routes.js"
 import likeRouter from "./routes/like.routes.js"
-
-
-
 
 
 //router declation
